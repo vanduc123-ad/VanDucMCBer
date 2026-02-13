@@ -3,100 +3,233 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hỗ trợ MCBE | VanDucMCBer</title>
+    <title>Hỗ trợ MCBE | VanDucMCBer Official</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@400;600;800&display=swap');
-        :root { --primary: #10b981; --bg: #05070a; --card: #0d1117; }
-        body { font-family: 'Lexend', sans-serif; background: var(--bg); color: #f8fafc; margin: 0; overflow-x: hidden; }
-        .glass-header { background: rgba(13, 17, 23, 0.8); border-bottom: 1px solid rgba(16, 185, 129, 0.2); backdrop-filter: blur(15px); }
-        .btn-main { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: #000; font-weight: 800; transition: 0.3s; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3); }
-        .btn-main:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(16, 185, 129, 0.5); }
-        .btn-main:disabled { background: #334155; color: #94a3b8; cursor: not-allowed; transform: none; box-shadow: none; }
-        .pack-card { background: var(--card); border: 1px solid rgba(255,255,255,0.05); border-radius: 24px; transition: 0.4s ease; }
-        .pack-card:hover { border-color: var(--primary); transform: translateY(-8px); background: #161b22; }
-        #loader { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .custom-scroll::-webkit-scrollbar { width: 5px; }
-        .custom-scroll::-webkit-scrollbar-thumb { background: #30363d; border-radius: 10px; }
+        @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;600;800&display=swap');
+        
+        :root {
+            --primary: #10b981;
+            --primary-dark: #059669;
+            --bg: #05070a;
+            --card: #0d1117;
+            --border: rgba(255, 255, 255, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Lexend', sans-serif;
+            background: var(--bg);
+            color: #e2e8f0;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Chữ mịn và hiệu ứng mượt */
+        .smooth-text {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .glass-nav {
+            background: rgba(13, 17, 23, 0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .btn-premium {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: #000;
+            font-weight: 700;
+            padding: 12px 24px;
+            border-radius: 14px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-premium:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-premium:active {
+            transform: translateY(0);
+        }
+
+        .card-item {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 28px;
+            padding: 30px;
+            transition: all 0.5s ease;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-item::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at top right, rgba(16, 185, 129, 0.1), transparent);
+            pointer-events: none;
+        }
+
+        .card-item:hover {
+            border-color: var(--primary);
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+
+        /* Loading Screen */
+        #page-loader {
+            position: fixed;
+            inset: 0;
+            background: var(--bg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.6s ease;
+        }
+
+        input, textarea, select {
+            background: #161b22 !important;
+            border: 1px solid var(--border) !important;
+            color: white !important;
+            border-radius: 16px !important;
+            padding: 14px !important;
+            font-size: 14px !important;
+            width: 100%;
+            outline: none !important;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, textarea:focus {
+            border-color: var(--primary) !important;
+            background: #1c2128 !important;
+        }
+
+        .badge {
+            font-size: 9px;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--primary);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        /* Tối ưu scroll */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: #30363d; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
     </style>
 </head>
-<body>
+<body class="smooth-text">
 
-    <div id="loader">
-        <div class="w-12 h-12 border-4 border-emerald-500/20 border-t-emerald-500 rounded-full animate-spin"></div>
-        <p class="mt-4 text-emerald-500 font-bold text-xs uppercase tracking-widest animate-pulse">Khởi tạo hệ thống...</p>
+    <!-- Màn hình chào -->
+    <div id="page-loader">
+        <div class="relative">
+            <div class="w-16 h-16 border-4 border-emerald-500/10 border-t-emerald-500 rounded-full animate-spin"></div>
+            <i class="fas fa-cube absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-emerald-500 text-xl"></i>
+        </div>
+        <p class="mt-6 text-emerald-500 font-bold text-[10px] uppercase tracking-[0.3em] animate-pulse">VANDUCMCBER CORE</p>
     </div>
 
-    <nav class="sticky top-0 z-50 glass-header px-6 py-4 flex justify-between items-center">
-        <div class="flex items-center gap-3">
-            <div class="w-11 h-11 bg-emerald-500 rounded-2xl flex items-center justify-center text-black shadow-xl rotate-3">
-                <i class="fas fa-box-open text-xl"></i>
+    <!-- Thanh điều hướng -->
+    <nav class="glass-nav px-6 py-4">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 bg-emerald-500 rounded-[18px] flex items-center justify-center text-black shadow-lg shadow-emerald-500/20 transform -rotate-3 hover:rotate-0 transition-transform cursor-pointer">
+                    <i class="fas fa-bolt text-2xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-extrabold tracking-tighter uppercase italic">Hỗ trợ <span class="text-emerald-500">MCBE</span></h1>
+                    <div class="flex items-center gap-2">
+                        <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-ping"></span>
+                        <p class="text-[9px] text-slate-500 font-bold uppercase tracking-widest">VanDucMCBer Edition</p>
+                    </div>
+                </div>
             </div>
-            <div>
-                <h1 class="text-xl font-extrabold uppercase leading-none tracking-tight">Hỗ trợ <span class="text-emerald-500">MCBE</span></h1>
-                <p class="text-[9px] text-slate-500 font-bold uppercase tracking-[0.2em]">VanDucMCBer Administrator</p>
-            </div>
+            <button onclick="toggleModal(true)" class="btn-premium">
+                <i class="fas fa-plus-circle"></i> Đăng Pack
+            </button>
         </div>
-        <button onclick="toggleModal(true)" class="btn-main px-6 py-3 rounded-2xl text-[11px] uppercase tracking-wider">Đăng Pack</button>
     </nav>
 
-    <main class="max-w-7xl mx-auto px-6 py-12">
-        <div class="flex flex-col md:flex-row md:items-center justify-between mb-12 gap-4">
-            <div>
-                <h2 class="text-3xl font-extrabold">Kho Addon Siêu Cấp</h2>
-                <p class="text-slate-500 text-sm mt-2">Dành riêng cho cộng đồng VanDucMCBer</p>
-            </div>
-            <div class="flex gap-2 bg-[#0d1117] p-1.5 rounded-2xl border border-white/5">
-                <button class="px-4 py-2 bg-emerald-500/10 text-emerald-500 text-xs font-bold rounded-xl border border-emerald-500/20">Tất cả</button>
-            </div>
-        </div>
-        
-        <div id="list-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-            <!-- Items appear here -->
+    <!-- Nội dung chính -->
+    <main class="max-w-7xl mx-auto px-6 py-16">
+        <header class="mb-16 text-center md:text-left">
+            <h2 class="text-4xl md:text-5xl font-extrabold mb-4 tracking-tight">Thư viện <span class="text-emerald-500 italic">VIP</span></h2>
+            <p class="text-slate-400 max-w-2xl text-lg font-light leading-relaxed">Chào mừng Đức quay trở lại. Tại đây chứa các bản cập nhật addon độc quyền cho Minecraft Bedrock.</p>
+        </header>
+
+        <div id="pack-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            <!-- Packs sẽ xuất hiện ở đây -->
         </div>
     </main>
 
-    <div id="modal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4 bg-black/90 backdrop-blur-xl">
-        <div class="bg-[#0d1117] w-full max-w-lg rounded-[32px] p-8 border border-white/10 shadow-2xl relative overflow-hidden">
-            <div class="flex justify-between items-center mb-8">
+    <!-- Modal Đăng Pack -->
+    <div id="modal-container" class="fixed inset-0 z-[200] hidden items-center justify-center p-6 bg-black/95 backdrop-blur-sm">
+        <div class="bg-[#0d1117] w-full max-w-xl rounded-[40px] p-10 border border-white/5 shadow-2xl relative">
+            <div class="flex justify-between items-center mb-10">
                 <div>
-                    <h3 class="text-white font-extrabold uppercase text-xl italic">Tạo Pack Mới</h3>
-                    <p class="text-slate-500 text-[10px] uppercase font-bold tracking-widest mt-1">Hướng dẫn cho VanDucMCBer</p>
+                    <h3 class="text-2xl font-extrabold italic uppercase">Phát hành Pack</h3>
+                    <p class="text-emerald-500/60 text-[10px] font-bold uppercase tracking-widest mt-1">Giao thức an toàn cho VanDucMCBer</p>
                 </div>
-                <button onclick="toggleModal(false)" class="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 text-slate-400 hover:text-white transition-colors">
-                    <i class="fas fa-times"></i>
+                <button onclick="toggleModal(false)" class="w-12 h-12 flex items-center justify-center rounded-2xl bg-white/5 text-slate-400 hover:text-white transition-all">
+                    <i class="fas fa-times text-xl"></i>
                 </button>
             </div>
 
-            <form id="pack-form" class="space-y-5">
-                <div class="space-y-2">
-                    <label class="text-[10px] uppercase font-bold text-slate-400 ml-1">Tên Pack (Bắt buộc)</label>
-                    <input type="text" id="name" placeholder="Ví dụ: Addon Bay VIP" required class="w-full bg-[#161b22] border border-[#30363d] p-4 rounded-2xl text-white outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500">
+            <form id="upload-form" class="space-y-6">
+                <div>
+                    <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3 block">Tiêu đề bản mod</label>
+                    <input type="text" id="p-name" placeholder="Tên Addon ví dụ: Bay Vĩnh Viễn V4" required>
                 </div>
-                
+
                 <div class="grid grid-cols-2 gap-4">
-                    <div class="space-y-2">
-                        <label class="text-[10px] uppercase font-bold text-slate-400 ml-1">Loại Pack</label>
-                        <select id="type" class="w-full bg-[#161b22] border border-[#30363d] p-4 rounded-2xl text-white outline-none focus:border-emerald-500">
-                            <option value="mcaddon">.mcaddon</option>
-                            <option value="mcpack">.mcpack</option>
-                            <option value="link">Link ngoài</option>
+                    <div>
+                        <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3 block">Loại file</label>
+                        <select id="p-type">
+                            <option value="MCADDON">Addon (.mcaddon)</option>
+                            <option value="MCPACK">Pack (.mcpack)</option>
+                            <option value="WORLD">World (.mcworld)</option>
+                            <option value="LINK">Link (Mediafire/Drive)</option>
                         </select>
                     </div>
-                    <div class="space-y-2">
-                        <label class="text-[10px] uppercase font-bold text-slate-400 ml-1">Chọn tệp (.zip, .mcpack...)</label>
-                        <input type="file" id="file" class="block w-full text-[10px] text-slate-500 file:mr-4 file:py-3 file:px-4 file:rounded-xl file:border-0 file:text-[10px] file:font-bold file:bg-emerald-500/10 file:text-emerald-500 hover:file:bg-emerald-500/20">
+                    <div>
+                        <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3 block">Dung lượng nhẹ</label>
+                        <input type="file" id="p-file" class="text-[10px] pt-3">
                     </div>
                 </div>
 
-                <div class="space-y-2">
-                    <label class="text-[10px] uppercase font-bold text-slate-400 ml-1">Ghi chú & Hướng dẫn (Cho người tạo VanDucMCBer)</label>
-                    <textarea id="desc" placeholder="Hướng dẫn cài đặt và tính năng VIP tại đây..." required class="w-full bg-[#161b22] border border-[#30363d] p-4 rounded-2xl text-white h-32 resize-none outline-none focus:border-emerald-500 custom-scroll"></textarea>
+                <div>
+                    <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3 block">Mô tả tính năng & Hướng dẫn</label>
+                    <textarea id="p-desc" placeholder="Đức hãy ghi hướng dẫn chi tiết tại đây để mọi người dễ dùng..." class="h-32 resize-none" required></textarea>
                 </div>
 
-                <button type="submit" id="btn-submit" class="w-full btn-main py-5 rounded-2xl uppercase text-xs tracking-[0.2em] mt-2">
-                    Xác nhận phát hành
+                <button type="submit" id="submit-btn" class="w-full btn-premium py-5 justify-center text-sm">
+                    Xác nhận tải lên Cloud
                 </button>
             </form>
         </div>
@@ -119,42 +252,110 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
-        const DB_ID = 'vanduc_v4_final_stable';
+        const APP_VERSION = 'mcbe_ultimate_v5'; // Đổi ID để làm sạch dữ liệu cũ
 
-        const hideLoader = () => {
-            const loader = document.getElementById('loader');
-            if(loader) {
-                loader.style.opacity = '0';
-                setTimeout(() => loader.style.display = 'none', 500);
-            }
-        };
+        const loader = document.getElementById('page-loader');
+        const hideLoading = () => { if(loader) { loader.style.opacity = '0'; setTimeout(() => loader.style.display = 'none', 600); } };
 
         signInAnonymously(auth).then(() => {
             onAuthStateChanged(auth, (user) => {
                 if(user) {
-                    const q = query(collection(db, 'artifacts', DB_ID, 'public', 'data', 'packs'), orderBy('createdAt', 'desc'));
+                    const q = query(collection(db, 'artifacts', APP_VERSION, 'public', 'data', 'packs'), orderBy('createdAt', 'desc'));
                     onSnapshot(q, (snap) => {
-                        hideLoader();
-                        const container = document.getElementById('list-container');
-                        container.innerHTML = '';
+                        hideLoading();
+                        const list = document.getElementById('pack-list');
+                        list.innerHTML = '';
                         if(snap.empty) {
-                            container.innerHTML = `
-                                <div class="col-span-full flex flex-col items-center justify-center py-32 opacity-20">
-                                    <i class="fas fa-folder-open text-6xl mb-4"></i>
-                                    <p class="font-bold uppercase tracking-widest text-xs">Danh sách đang trống</p>
-                                </div>`;
+                            list.innerHTML = '<div class="col-span-full py-24 text-center text-slate-700 font-bold uppercase text-xs tracking-widest italic opacity-40">Hệ thống đang chờ Đức đăng bản mod đầu tiên...</div>';
+                            return;
                         }
                         snap.docs.forEach(doc => {
-                            const d = doc.data();
-                            const card = document.createElement('div');
-                            card.className = 'pack-card p-8 flex flex-col shadow-2xl';
-                            card.innerHTML = `
+                            const pack = doc.data();
+                            const div = document.createElement('div');
+                            div.className = 'card-item';
+                            div.innerHTML = `
                                 <div class="flex justify-between items-start mb-6">
-                                    <span class="bg-emerald-500/10 text-emerald-500 text-[9px] font-extrabold px-3 py-1.5 rounded-lg border border-emerald-500/20 uppercase tracking-wider">${d.type}</span>
-                                    <div class="flex gap-1">
-                                        <div class="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
-                                        <div class="w-1.5 h-1.5 rounded-full bg-emerald-500/30"></div>
-                                    </div>
+                                    <span class="badge">${pack.type}</span>
+                                    <i class="fas fa-ellipsis-h text-slate-700"></i>
+                                </div>
+                                <h3 class="text-xl font-extrabold text-white mb-4 uppercase tracking-tight leading-tight">${pack.name}</h3>
+                                <p class="text-[12px] text-slate-400 mb-8 line-clamp-4 font-light leading-relaxed">${pack.description}</p>
+                                <div class="mt-auto">
+                                    <button onclick="downloadPack('${pack.file}', '${pack.link}')" class="w-full py-4 rounded-2xl bg-white/5 border border-white/5 text-white font-bold text-[11px] uppercase tracking-wider hover:bg-emerald-500 hover:text-black hover:border-emerald-500 transition-all duration-300">
+                                        Tải về thiết bị
+                                    </button>
+                                </div>
+                            `;
+                            list.appendChild(div);
+                        });
+                    }, () => hideLoading());
+                }
+            });
+        }).catch(() => hideLoading());
+
+        window.downloadPack = (file, link) => {
+            if (file && file.startsWith('data:')) {
+                const a = document.createElement('a');
+                a.href = file;
+                a.download = `VanDucMCBer_Pack_${Date.now()}.mcpack`;
+                a.click();
+            } else if (link && link.length > 5) {
+                window.open(link, '_blank');
+            } else {
+                alert("Bản mod này chưa đính kèm link tải!");
+            }
+        };
+
+        document.getElementById('upload-form').onsubmit = async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('submit-btn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-sync-alt animate-spin mr-2"></i> Đang tải lên...';
+
+            const fileIn = document.getElementById('p-file');
+            let fileData = "";
+
+            if(fileIn.files.length > 0) {
+                const file = fileIn.files[0];
+                if(file.size > 1.5 * 1024 * 1024) { // 1.5MB là chuẩn mịn nhất cho web
+                    alert("File quá nặng! Đức hãy upload lên Drive rồi dán link vào phần mô tả để web chạy mượt hơn nhé.");
+                    btn.disabled = false; btn.innerText = "Xác nhận tải lên Cloud";
+                    return;
+                }
+                fileData = await new Promise(r => {
+                    const fr = new FileReader();
+                    fr.onload = () => r(fr.result);
+                    fr.readAsDataURL(file);
+                });
+            }
+
+            try {
+                await addDoc(collection(db, 'artifacts', APP_VERSION, 'public', 'data', 'packs'), {
+                    name: document.getElementById('p-name').value,
+                    type: document.getElementById('p-type').value,
+                    description: document.getElementById('p-desc').value,
+                    file: fileData,
+                    createdAt: serverTimestamp()
+                });
+                toggleModal(false);
+                document.getElementById('upload-form').reset();
+            } catch (err) {
+                alert("Lỗi server! Hãy thử lại sau.");
+            }
+            btn.disabled = false;
+            btn.innerText = "Xác nhận tải lên Cloud";
+        };
+
+        window.toggleModal = (show) => {
+            const m = document.getElementById('modal-container');
+            if(show) { m.classList.remove('hidden'); m.classList.add('flex'); }
+            else { m.classList.add('hidden'); m.classList.remove('flex'); }
+        }
+    </script>
+</body>
+</html>
+
+     </div>
                                 </div>
                                 <h4 class="font-extrabold text-white mb-3 text-lg leading-tight uppercase tracking-tight">${d.name}</h4>
                                 <p class="text-[11px] text-slate-400 mb-8 line-clamp-3 leading-relaxed font-medium">${d.description}</p>
