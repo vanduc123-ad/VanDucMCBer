@@ -8,32 +8,231 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@400;600;800&display=swap');
+        :root { --primary: #10b981; --bg: #05070a; --card: #0d1117; }
+        body { font-family: 'Lexend', sans-serif; background: var(--bg); color: #f8fafc; margin: 0; overflow-x: hidden; }
+        .glass-header { background: rgba(13, 17, 23, 0.8); border-bottom: 1px solid rgba(16, 185, 129, 0.2); backdrop-filter: blur(15px); }
+        .btn-main { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: #000; font-weight: 800; transition: 0.3s; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3); }
+        .btn-main:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(16, 185, 129, 0.5); }
+        .btn-main:disabled { background: #334155; color: #94a3b8; cursor: not-allowed; transform: none; box-shadow: none; }
+        .pack-card { background: var(--card); border: 1px solid rgba(255,255,255,0.05); border-radius: 24px; transition: 0.4s ease; }
+        .pack-card:hover { border-color: var(--primary); transform: translateY(-8px); background: #161b22; }
+        #loader { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .custom-scroll::-webkit-scrollbar { width: 5px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #30363d; border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+    <div id="loader">
+        <div class="w-12 h-12 border-4 border-emerald-500/20 border-t-emerald-500 rounded-full animate-spin"></div>
+        <p class="mt-4 text-emerald-500 font-bold text-xs uppercase tracking-widest animate-pulse">Khởi tạo hệ thống...</p>
+    </div>
+
+    <nav class="sticky top-0 z-50 glass-header px-6 py-4 flex justify-between items-center">
+        <div class="flex items-center gap-3">
+            <div class="w-11 h-11 bg-emerald-500 rounded-2xl flex items-center justify-center text-black shadow-xl rotate-3">
+                <i class="fas fa-box-open text-xl"></i>
+            </div>
+            <div>
+                <h1 class="text-xl font-extrabold uppercase leading-none tracking-tight">Hỗ trợ <span class="text-emerald-500">MCBE</span></h1>
+                <p class="text-[9px] text-slate-500 font-bold uppercase tracking-[0.2em]">VanDucMCBer Administrator</p>
+            </div>
+        </div>
+        <button onclick="toggleModal(true)" class="btn-main px-6 py-3 rounded-2xl text-[11px] uppercase tracking-wider">Đăng Pack</button>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-6 py-12">
+        <div class="flex flex-col md:flex-row md:items-center justify-between mb-12 gap-4">
+            <div>
+                <h2 class="text-3xl font-extrabold">Kho Addon Siêu Cấp</h2>
+                <p class="text-slate-500 text-sm mt-2">Dành riêng cho cộng đồng VanDucMCBer</p>
+            </div>
+            <div class="flex gap-2 bg-[#0d1117] p-1.5 rounded-2xl border border-white/5">
+                <button class="px-4 py-2 bg-emerald-500/10 text-emerald-500 text-xs font-bold rounded-xl border border-emerald-500/20">Tất cả</button>
+            </div>
+        </div>
         
-        :root {
-            --primary: #10b981;
-            --primary-glow: rgba(16, 185, 129, 0.4);
-            --bg-dark: #05070a;
-            --card-bg: #0d1117;
-        }
+        <div id="list-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            <!-- Items appear here -->
+        </div>
+    </main>
 
-        body { 
-            font-family: 'Lexend', sans-serif; 
-            background: var(--bg-dark); 
-            color: #f8fafc; 
-            margin: 0; 
-            overflow-x: hidden;
-        }
+    <div id="modal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4 bg-black/90 backdrop-blur-xl">
+        <div class="bg-[#0d1117] w-full max-w-lg rounded-[32px] p-8 border border-white/10 shadow-2xl relative overflow-hidden">
+            <div class="flex justify-between items-center mb-8">
+                <div>
+                    <h3 class="text-white font-extrabold uppercase text-xl italic">Tạo Pack Mới</h3>
+                    <p class="text-slate-500 text-[10px] uppercase font-bold tracking-widest mt-1">Hướng dẫn cho VanDucMCBer</p>
+                </div>
+                <button onclick="toggleModal(false)" class="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 text-slate-400 hover:text-white transition-colors">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
 
-        .mc-header { 
-            background: rgba(13, 17, 23, 0.9); 
-            border-bottom: 1px solid rgba(255,255,255,0.1); 
-            backdrop-filter: blur(12px); 
-        }
+            <form id="pack-form" class="space-y-5">
+                <div class="space-y-2">
+                    <label class="text-[10px] uppercase font-bold text-slate-400 ml-1">Tên Pack (Bắt buộc)</label>
+                    <input type="text" id="name" placeholder="Ví dụ: Addon Bay VIP" required class="w-full bg-[#161b22] border border-[#30363d] p-4 rounded-2xl text-white outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500">
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-2">
+                        <label class="text-[10px] uppercase font-bold text-slate-400 ml-1">Loại Pack</label>
+                        <select id="type" class="w-full bg-[#161b22] border border-[#30363d] p-4 rounded-2xl text-white outline-none focus:border-emerald-500">
+                            <option value="mcaddon">.mcaddon</option>
+                            <option value="mcpack">.mcpack</option>
+                            <option value="link">Link ngoài</option>
+                        </select>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-[10px] uppercase font-bold text-slate-400 ml-1">Chọn tệp (.zip, .mcpack...)</label>
+                        <input type="file" id="file" class="block w-full text-[10px] text-slate-500 file:mr-4 file:py-3 file:px-4 file:rounded-xl file:border-0 file:text-[10px] file:font-bold file:bg-emerald-500/10 file:text-emerald-500 hover:file:bg-emerald-500/20">
+                    </div>
+                </div>
 
-        .text-gradient {
-            background: linear-gradient(135deg, #10b981 0%, #3b82f6 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+                <div class="space-y-2">
+                    <label class="text-[10px] uppercase font-bold text-slate-400 ml-1">Ghi chú & Hướng dẫn (Cho người tạo VanDucMCBer)</label>
+                    <textarea id="desc" placeholder="Hướng dẫn cài đặt và tính năng VIP tại đây..." required class="w-full bg-[#161b22] border border-[#30363d] p-4 rounded-2xl text-white h-32 resize-none outline-none focus:border-emerald-500 custom-scroll"></textarea>
+                </div>
+
+                <button type="submit" id="btn-submit" class="w-full btn-main py-5 rounded-2xl uppercase text-xs tracking-[0.2em] mt-2">
+                    Xác nhận phát hành
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCZQLYjtjCTh-7LQSlDQw4zFEYZyIHYxL4",
+            authDomain: "vanducmcber-library.firebaseapp.com",
+            projectId: "vanducmcber-library",
+            storageBucket: "vanducmcber-library.firebasestorage.app",
+            messagingSenderId: "553578476047",
+            appId: "1:553578476047:web:c1772fb9bbdb1e8417697a"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const DB_ID = 'vanduc_v4_final_stable';
+
+        const hideLoader = () => {
+            const loader = document.getElementById('loader');
+            if(loader) {
+                loader.style.opacity = '0';
+                setTimeout(() => loader.style.display = 'none', 500);
+            }
+        };
+
+        signInAnonymously(auth).then(() => {
+            onAuthStateChanged(auth, (user) => {
+                if(user) {
+                    const q = query(collection(db, 'artifacts', DB_ID, 'public', 'data', 'packs'), orderBy('createdAt', 'desc'));
+                    onSnapshot(q, (snap) => {
+                        hideLoader();
+                        const container = document.getElementById('list-container');
+                        container.innerHTML = '';
+                        if(snap.empty) {
+                            container.innerHTML = `
+                                <div class="col-span-full flex flex-col items-center justify-center py-32 opacity-20">
+                                    <i class="fas fa-folder-open text-6xl mb-4"></i>
+                                    <p class="font-bold uppercase tracking-widest text-xs">Danh sách đang trống</p>
+                                </div>`;
+                        }
+                        snap.docs.forEach(doc => {
+                            const d = doc.data();
+                            const card = document.createElement('div');
+                            card.className = 'pack-card p-8 flex flex-col shadow-2xl';
+                            card.innerHTML = `
+                                <div class="flex justify-between items-start mb-6">
+                                    <span class="bg-emerald-500/10 text-emerald-500 text-[9px] font-extrabold px-3 py-1.5 rounded-lg border border-emerald-500/20 uppercase tracking-wider">${d.type}</span>
+                                    <div class="flex gap-1">
+                                        <div class="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
+                                        <div class="w-1.5 h-1.5 rounded-full bg-emerald-500/30"></div>
+                                    </div>
+                                </div>
+                                <h4 class="font-extrabold text-white mb-3 text-lg leading-tight uppercase tracking-tight">${d.name}</h4>
+                                <p class="text-[11px] text-slate-400 mb-8 line-clamp-3 leading-relaxed font-medium">${d.description}</p>
+                                <div class="mt-auto pt-4 border-t border-white/5">
+                                    <button onclick="handleDownload('${d.fileData}', '${d.link}')" class="w-full bg-emerald-500/5 hover:bg-emerald-500 text-emerald-500 hover:text-black py-4 rounded-2xl text-[11px] font-extrabold uppercase transition-all duration-500 border border-emerald-500/20">
+                                        Tải về ngay
+                                    </button>
+                                </div>
+                            `;
+                            container.appendChild(card);
+                        });
+                    }, () => hideLoader());
+                }
+            });
+        }).catch(() => hideLoader());
+
+        window.handleDownload = (data, link) => {
+            if (data && data !== "null" && data !== "undefined" && data.length > 10) {
+                const a = document.createElement('a');
+                a.href = data;
+                a.download = "Pack_VanDucMCBer_" + Date.now();
+                a.click();
+            } else if (link && link !== "undefined") {
+                window.open(link, '_blank');
+            } else {
+                alert("Không tìm thấy file hoặc link tải!");
+            }
+        };
+
+        document.getElementById('pack-form').onsubmit = async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('btn-submit');
+            const fileInput = document.getElementById('file');
+            
+            btn.disabled = true; 
+            btn.innerHTML = '<i class="fas fa-spinner animate-spin mr-2"></i> Đang xử lý...';
+            
+            let b64 = "";
+            if(fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                if (file.size > 2 * 1024 * 1024) { // Giới hạn 2MB
+                    alert("File quá nặng! Vui lòng chọn file dưới 2MB hoặc dùng Link ngoài.");
+                    btn.disabled = false; btn.innerText = "Xác nhận phát hành";
+                    return;
+                }
+                b64 = await new Promise(r => { 
+                    const fr = new FileReader(); 
+                    fr.readAsDataURL(file); 
+                    fr.onload = () => r(fr.result); 
+                });
+            }
+
+            try {
+                await addDoc(collection(db, 'artifacts', DB_ID, 'public', 'data', 'packs'), {
+                    name: document.getElementById('name').value,
+                    type: document.getElementById('type').value,
+                    description: document.getElementById('desc').value,
+                    fileData: b64, 
+                    createdAt: serverTimestamp()
+                });
+                toggleModal(false);
+                document.getElementById('pack-form').reset();
+            } catch (err) { 
+                alert("Lỗi kết nối Server! Thử lại sau."); 
+            }
+            btn.disabled = false; 
+            btn.innerText = "Xác nhận phát hành";
+        };
+
+        window.toggleModal = (s) => {
+            const m = document.getElementById('modal');
+            m.classList.toggle('hidden', !s);
+            if(s) m.classList.add('flex'); else m.classList.remove('flex');
+        }
+    </script>
+</body>
+</html>
+
         }
 
         .btn-primary { 
